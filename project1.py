@@ -34,7 +34,11 @@ def hinge_loss_single(feature_vector, label, theta, theta_0):
     given data point and parameters.
     """
     # Your code here
-    raise NotImplementedError
+    h = np.sum(np.multiply(feature_vector,theta))+theta_0
+
+    ret = max(0,1-h*label) #hingeloss formula
+
+    return ret
 
 
 def hinge_loss_full(feature_matrix, labels, theta, theta_0):
@@ -55,8 +59,11 @@ def hinge_loss_full(feature_matrix, labels, theta, theta_0):
     given dataset and parameters. This number should be the average hinge
     loss across all of the points in the feature matrix.
     """
-    # Your code here
-    raise NotImplementedError
+    loss = 0
+    for i in range(len(feature_matrix)):
+        loss += hinge_loss_single(feature_matrix[i], labels[i], theta, theta_0)
+    return loss / len(labels)
+
 
 
 def perceptron_single_step_update(

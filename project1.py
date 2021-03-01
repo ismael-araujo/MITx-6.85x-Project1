@@ -89,7 +89,13 @@ def perceptron_single_step_update(
     completed.
     """
     # Your code here
-    raise NotImplementedError
+    if label * (np.dot(current_theta, feature_vector) + current_theta_0) <= 0:
+        next_theta = current_theta + label * feature_vector
+        next_theta_0 = current_theta_0 + label
+    else:
+        next_theta = current_theta
+        next_theta_0 = current_theta_0
+    return (next_theta, next_theta_0)
 
 
 def perceptron(feature_matrix, labels, T):
@@ -118,11 +124,13 @@ def perceptron(feature_matrix, labels, T):
     the feature matrix.
     """
     # Your code here
+    theta = np.zeros(feature_matrix.shape[1])
+    theta_0 = 0
     for t in range(T):
         for i in get_order(feature_matrix.shape[0]):
             # Your code here
-            pass
-    raise NotImplementedError
+            theta, theta_0 = perceptron_single_step_update(feature_matrix[i, :], labels[i], theta, theta_0)
+    return (theta, theta_0)
 
 
 def average_perceptron(feature_matrix, labels, T):

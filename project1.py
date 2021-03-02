@@ -247,7 +247,21 @@ def pegasos(feature_matrix, labels, T, L):
     parameter, found after T iterations through the feature matrix.
     """
     # Your code here
-    raise NotImplementedError
+    num_data_points = feature_matrix.shape[0]
+    # Initialize theta, theta_0
+    theta = np.zeros(feature_matrix.shape[1])
+    theta_0 = 0
+    t_all = [i for i in range(1, num_data_points * T + 1)]
+
+    # Pegasos update for T times
+    t_idx = 0
+    for _ in range(1, T + 1):
+        #print(eta)
+        for i in get_order(num_data_points):
+            eta = 1/np.sqrt(t_all[t_idx])
+            theta, theta_0 = pegasos_single_step_update(feature_matrix[i, :], labels[i], L, eta, theta, theta_0)
+            t_idx += 1
+    return (theta, theta_0)
 
 # Part II
 
@@ -270,7 +284,18 @@ def classify(feature_matrix, theta, theta_0):
     be considered a positive classification.
     """
     # Your code here
-    raise NotImplementedError
+
+    (nsamples, nfeatures) = feature_matrix.shape
+    predictions = np.zeros(nsamples)
+    for i in range(nsamples):
+        feature_vector = feature_matrix[i]
+        prediction = np.dot(theta, feature_vector) + theta_0
+        if (prediction > 0):
+            predictions[i] = 1
+        else:
+            predictions[i] = -1
+    return predictions
+
 
 
 def classifier_accuracy(
@@ -306,7 +331,12 @@ def classifier_accuracy(
     accuracy of the trained classifier on the validation data.
     """
     # Your code here
-    raise NotImplementedError
+    theta, theta_0 = classifier(train_feature_matrix, train_labels, **kwargs)
+    train_predict_labels = classify(train_feature_matrix, theta, theta_0)
+    val_predict_labels = classify(val_feature_matrix, theta, theta_0)
+    train_accuracy = accuracy(train_predict_labels, train_labels)
+    val_accuracy = accuracy(val_predict_labels, val_labels)
+    return (train_accuracy, val_accuracy)
 
 
 def extract_words(input_string):
